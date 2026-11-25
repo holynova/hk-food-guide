@@ -110,10 +110,6 @@ button:focus-visible, a:focus-visible {
   bottom: 210px;
 }
 
-.hk-map .leaflet-tile-pane {
-  filter: grayscale(78%) saturate(0.45) brightness(1.06) contrast(0.94);
-}
-
 /* Floating Top Header + Single-Accent Chips */
 .float-header {
   position: absolute;
