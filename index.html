@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#FAFBF9" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <title>香港美食地图与真口碑食单（全港29家）</title>
+  <meta name="description" content="全港29家精选美食地图与攻略：涵盖5家平价米其林一星、8家全港知名名店（九记牛腩/澳牛/莲香楼等）与16家本地私藏老店，红磡住宿出发同样顺路。" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23B83424'/%3E%3Cpath d='M32 14c-8.8 0-16 7.2-16 16 0 11.2 16 22 16 22s16-10.8 16-22c0-8.8-7.2-16-16-16zm0 21a5 5 0 1 1 0-10 5 5 0 0 1 0 10z' fill='%23FFFFFF'/%3E%3C/svg%3E" />
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="e01c9f78-4607-4e60-b01c-77c8190b12b4"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Noto+Serif+SC:wght@600;700;900&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Minimal Header + Full-Width Editorial Underline Tabs -->
+    <header class="top-bar">
+      <div class="top-bar-row">
+        <div class="brand">
+          <h1 class="app-title">香港美食地图与食单</h1>
+          <span class="app-meta" id="headerMeta">全港 29 家 · 红磡出发参考 · 12月4日前</span>
+        </div>
+        <button type="button" class="share-btn" id="copyWechatBtn" aria-label="复制微信精简版">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span>复制微信版</span>
+        </button>
+      </div>
+      <nav class="underline-tabs" aria-label="主视图切换">
+        <button type="button" class="u-tab active" data-view="overview" aria-current="page">
+          <span>全港总览地图</span>
+          <span class="u-tab-count">29</span>
+        </button>
+        <button type="button" class="u-tab" data-view="guide">
+          <span>路线与避雷</span>
+          <span class="u-tab-count">5线</span>
+        </button>
+      </nav>
+    </header>
+
+    <main class="main-content">
+      <!-- ================================================================
+           VIEW 1: 总览（实景地图 + 核心总览 + 极简食单）
+           ================================================================ -->
+      <section class="view active" id="view-overview" aria-label="美食总览与地图">
+
+        <!-- Interactive Map Hero (All 21 spots + Hung Hom Base) -->
+        <div class="map-frame" id="mapFrame">
+          <div id="hkMap" class="hk-map" role="application" aria-label="香港21家美食总览地图"></div>
+
+          <div class="map-overlay-top">
+            <div class="map-legend">
+              <span class="legend-item"><i class="dot dot-star"></i>一星</span>
+              <span class="legend-item"><i class="dot dot-famous"></i>知名名店</span>
+              <span class="legend-item"><i class="dot dot-local"></i>本地私藏</span>
+            </div>
+            <div class="map-btn-group">
+              <button type="button" class="map-mini-btn" id="btnRecenter" aria-label="回到红磡">红磡</button>
+              <button type="button" class="map-mini-btn" id="btnFitAll" aria-label="全览所有标点">全览</button>
+              <button type="button" class="map-mini-btn" id="btnExpandMap" aria-label="放大地图">大图</button>
+            </div>
+          </div>
+
+          <div class="map-offline-bar" id="mapOfflineNotice" hidden>
+            地图底图加载较慢，可直接点选标点或下方列表一键跳 Google / 高德导航
+          </div>
+
+          <!-- Compact Selected Pin Bar -->
+          <div class="map-pin-sheet" id="mapPinSheet" hidden>
+            <div class="map-pin-info" id="mapPinInfo"></div>
+            <div class="map-pin-actions" id="mapPinActions"></div>
+          </div>
+        </div>
+
+        <!-- Concise Trip Overview Block -->
+        <div class="overview-summary" id="overviewSummary">
+          <div class="overview-intro">
+            <p class="overview-lead">
+              放眼全港（港岛 + 九龙），精选 <strong>29</strong> 家代表食店并清晰分层：<strong>5</strong> 家平价米其林一星、<strong>8</strong> 家全港知名地标名店（独立归类、实话评点）、<strong>16</strong> 家本地私藏口碑老店，均附红磡出发耗时。
+            </p>
+          </div>
+
+          <dl class="overview-facts">
+            <div class="ov-fact">
+              <dt>平价摘星</dt>
+              <dd><button type="button" class="text-link" data-spot="yat-lok">一乐</button> · <button type="button" class="text-link" data-spot="kams-roast-goose">甘牌</button> · <button type="button" class="text-link" data-spot="yat-tung-heen">逸东轩</button> · <button type="button" class="text-link" data-spot="ho-hung-kee">何洪记</button> · <button type="button" class="text-link" data-spot="pangs-kitchen">彭庆记</button></dd>
+            </div>
+            <div class="ov-fact">
+              <dt>知名名店</dt>
+              <dd><button type="button" class="text-link" data-spot="kau-kee">九记牛腩</button> · <button type="button" class="text-link" data-spot="australia-dairy">澳牛</button> · <button type="button" class="text-link" data-spot="lin-heung-lau">莲香楼</button> · <button type="button" class="text-link" data-spot="sing-heung-yuen">胜香园</button> · <button type="button" class="text-link" data-spot="lan-fong-yuen">兰芳园</button></dd>
+            </div>
+            <div class="ov-fact">
+              <dt>公休提醒</dt>
+              <dd>九记/胜香园/兰芳园/再兴周日休 · 强记周一休 · 澳牛周四休</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Unified Filter Rail (Syncs Map + List simultaneously) -->
+        <div class="filter-bar">
+          <div class="filter-rail" id="filterRail" role="tablist" aria-label="按类别与区域筛选">
+            <button type="button" class="filter-pill active" data-filter="all">全部 29</button>
+            <button type="button" class="filter-pill pill-star" data-filter="michelin-1">米其林一星 5</button>
+            <button type="button" class="filter-pill pill-famous" data-filter="famous">知名名店 8</button>
+            <button type="button" class="filter-pill" data-filter="local-picks">本地私藏 16</button>
+            <button type="button" class="filter-pill" data-filter="island">港岛 13</button>
+            <button type="button" class="filter-pill" data-filter="kowloon-all">九龙 16</button>
+            <button type="button" class="filter-pill" data-filter="seasonal">秋冬限定 5</button>
+          </div>
+
+          <div class="list-toolbar">
+            <span class="list-status" id="listStatus">共 29 家 · 已打卡 0</span>
+            <label for="sortSelect" class="sr-only">排序</label>
+            <select id="sortSelect" class="sort-select">
+              <option value="recommended">推荐序</option>
+              <option value="time">红磡耗时短优先</option>
+              <option value="price-asc">人均低到高</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Distilled Hairline Restaurant List -->
+        <ul class="spot-list" id="spotList" aria-live="polite"></ul>
+      </section>
+
+      <!-- ================================================================
+           VIEW 2: 攻略（4条红磡出发路线 + 网红避雷平替 + 实用提醒）
+           ================================================================ -->
+      <section class="view" id="view-guide" aria-label="红磡出发攻略与避雷" hidden>
+        <div class="guide-wrap">
+          <div class="guide-block">
+            <h2 class="guide-heading">全港实战 · 5条顺路美食线</h2>
+            <p class="guide-sub">覆盖中环经典名店圈、湾仔过海摘星、九龙老饕与红磡下班宵夜，点店名直接看详情或导航。</p>
+            <div class="editorial-list" id="itineraryList"></div>
+          </div>
+
+          <div class="guide-block">
+            <h2 class="guide-heading">去软文 · 网红避雷与本地平替</h2>
+            <p class="guide-sub">剔除社媒高频营销与已失星/游客化的踩雷店，直接换本地熟客去的老铺。</p>
+            <div class="editorial-list" id="antiHypeList"></div>
+          </div>
+
+          <div class="guide-block">
+            <h2 class="guide-heading">行前必备常识</h2>
+            <div class="editorial-list" id="tipsList"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <span>香港美食地图与真口碑食单 · v1.0.0</span>
+      <a href="https://github.com/holynova/hk-food-guide" target="_blank" rel="noopener noreferrer">GitHub</a>
+    </footer>
+  </div>
+
+  <!-- Slide-Up Detail Sheet (Progressive Disclosure) -->
+  <div class="sheet-backdrop" id="detailBackdrop" hidden aria-hidden="true"></div>
+  <aside class="detail-sheet" id="detailSheet" role="dialog" aria-modal="true" aria-labelledby="detailTitle" hidden>
+    <div class="sheet-top">
+      <span class="sheet-bar" aria-hidden="true"></span>
+      <button type="button" class="sheet-close" id="detailCloseBtn" aria-label="关闭详情">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+    <div class="sheet-body" id="detailBody"></div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script src="./data.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

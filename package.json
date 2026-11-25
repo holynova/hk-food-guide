@@ -1,0 +1,11 @@
+{
+  "name": "hk-food-guide",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mobile-first Hong Kong food map and curated dining guide featuring 29 vetted spots including affordable 1-Michelin-star eateries, iconic classics, and local favorites.",
+  "scripts": {
+    "dev": "npx --yes serve .",
+    "deploy:check": "npx --yes wrangler@4.128.0 deploy --dry-run --config wrangler.jsonc",
+    "deploy": "npx --yes wrangler@4.128.0 deploy --config wrangler.jsonc"
+  }
+}
